@@ -202,13 +202,13 @@ function closeModal(modal) {
 function setViewMode(mode) {
   state.viewMode = mode;
   if (mode === "grid") {
-    btnViewGrid.className = "p-1.5 rounded-lg bg-blue-600/30 border border-blue-500/50 text-blue-400";
-    btnViewList.className = "p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white border border-slate-700";
-    listingsContainer.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4";
+    btnViewGrid.className = "view-toggle view-toggle-active";
+    btnViewList.className = "view-toggle";
+    listingsContainer.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3";
   } else {
-    btnViewGrid.className = "p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white border border-slate-700";
-    btnViewList.className = "p-1.5 rounded-lg bg-blue-600/30 border border-blue-500/50 text-blue-400";
-    listingsContainer.className = "flex flex-col space-y-3";
+    btnViewGrid.className = "view-toggle";
+    btnViewList.className = "view-toggle view-toggle-active";
+    listingsContainer.className = "flex flex-col gap-3";
   }
   renderFilteredResults();
 }
@@ -413,7 +413,7 @@ function getPlatformBadgeClass(platform) {
 
 function createGridCard(item, isLowestPrice) {
   const card = document.createElement("div");
-  card.className = "listing-card rounded-2xl overflow-hidden flex flex-col relative";
+  card.className = "listing-card overflow-hidden flex flex-col relative";
 
   const badgeClass = getPlatformBadgeClass(item.platform);
   const fallbackImg = `https://placehold.co/400x300/0b0f19/94a3b8?text=${encodeURIComponent(item.platform_name)}`;
@@ -421,56 +421,51 @@ function createGridCard(item, isLowestPrice) {
 
   card.innerHTML = `
     <!-- Image Box -->
-    <div class="relative w-full h-44 bg-white/[0.015] overflow-hidden group border-b border-white/[0.06]">
+    <div class="relative w-full h-40 bg-[#09090b] overflow-hidden border-b border-white/[0.06]">
       <img
         src="${escapeHtml(imgUrl)}"
         alt="${escapeHtml(item.title)}"
         loading="lazy"
         onerror="this.src='${fallbackImg}'"
-        class="w-full h-full object-contain p-2.5 group-hover:scale-105 transition-transform duration-300"
+        class="w-full h-full object-contain p-2"
       />
-      <!-- Platform Badge -->
-      <span class="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide ${badgeClass} backdrop-blur-md">
+      <span class="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-medium ${badgeClass}">
         ${escapeHtml(item.platform_name)}
       </span>
 
       ${
         isLowestPrice
-          ? `<span class="absolute top-2.5 right-2.5 bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10px] font-semibold px-2 py-0.5 rounded-full backdrop-blur-md flex items-center space-x-1">
-              <span>Χαμηλότερη τιμή</span>
+          ? `<span class="absolute top-2 right-2 text-[10px] font-medium px-2 py-0.5 rounded border border-white/10 bg-white/[0.06] text-zinc-300">
+              Χαμηλότερη τιμή
             </span>`
           : ""
       }
     </div>
 
-    <!-- Body Content -->
-    <div class="p-4 flex-1 flex flex-col">
-      <!-- Price -->
-      <div class="mb-2 flex items-baseline justify-between">
-        <span class="text-xl font-bold tracking-tight ${item.is_price_clear ? "text-white" : "text-amber-300"}">
+    <div class="p-3.5 flex-1 flex flex-col">
+      <div class="mb-2 flex items-baseline justify-between gap-2">
+        <span class="text-lg font-semibold tracking-tight ${item.is_price_clear ? "text-white" : "text-zinc-400"}">
           ${escapeHtml(item.price_formatted)}
         </span>
         ${
           item.is_price_clear
-            ? '<span class="text-[10px] text-slate-500 font-normal">σε ευρώ (€)</span>'
-            : '<span class="text-[10px] bg-amber-500/10 text-amber-300 border border-amber-500/20 px-1.5 py-0.5 rounded font-normal">Ζήτηση / Έλεγχος</span>'
+            ? ""
+            : '<span class="text-[10px] text-zinc-500 shrink-0">Ζήτηση τιμής</span>'
         }
       </div>
 
-      <!-- Title -->
-      <h3 class="text-sm font-semibold text-slate-200 line-clamp-2 hover:text-white transition-colors mb-2 leading-snug" title="${escapeHtml(item.title)}">
+      <h3 class="text-sm font-medium text-zinc-300 line-clamp-2 hover:text-white transition-colors mb-2 leading-snug" title="${escapeHtml(item.title)}">
         <a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">
           ${escapeHtml(item.title)}
         </a>
       </h3>
 
       <!-- Description / Snippet -->
-      <p class="text-xs text-slate-400 line-clamp-2 mb-4 flex-1">
+      <p class="text-xs text-zinc-500 line-clamp-2 mb-3 flex-1">
         ${escapeHtml(item.description || "Δεν υπάρχει πρόσθετη περιγραφή.")}
       </p>
 
-      <!-- Meta Info: Location & Date -->
-      <div class="pt-3 border-t border-white/[0.06] text-[11px] text-slate-400 space-y-1.5 mb-3.5">
+      <div class="pt-3 border-t border-white/[0.06] text-[11px] text-zinc-500 space-y-1 mb-3">
         <div class="flex items-center space-x-1.5">
           <i data-lucide="map-pin" class="w-3.5 h-3.5 text-slate-500 shrink-0"></i>
           <span class="truncate">${escapeHtml(item.location || "Πανελλαδικά")}</span>
@@ -485,15 +480,14 @@ function createGridCard(item, isLowestPrice) {
         }
       </div>
 
-      <!-- Human-Crafted CTA Button (Inverts smoothly on hover) -->
       <a
         href="${escapeHtml(item.url)}"
         target="_blank"
         rel="noopener noreferrer"
-        class="btn-card-action w-full py-2.5 px-3 rounded-xl flex items-center justify-center space-x-1.5 group"
+        class="btn-card-action w-full py-2 px-3 flex items-center justify-center gap-1.5"
       >
-        <span>Μετάβαση στην αγγελία</span>
-        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-black transition-colors"></i>
+        <span>Άνοιγμα αγγελίας</span>
+        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-zinc-500"></i>
       </a>
     </div>
   `;
@@ -503,7 +497,7 @@ function createGridCard(item, isLowestPrice) {
 
 function createListCard(item, isLowestPrice) {
   const card = document.createElement("div");
-  card.className = "listing-card rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4 relative";
+  card.className = "listing-card p-3.5 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 relative";
 
   const badgeClass = getPlatformBadgeClass(item.platform);
   const fallbackImg = `https://placehold.co/200x200/0b0f19/94a3b8?text=${encodeURIComponent(item.platform_name)}`;
@@ -511,7 +505,7 @@ function createListCard(item, isLowestPrice) {
 
   card.innerHTML = `
     <!-- Thumbnail -->
-    <div class="w-full sm:w-36 h-32 bg-white/[0.015] rounded-xl overflow-hidden shrink-0 relative border border-white/[0.06]">
+    <div class="w-full sm:w-32 h-28 bg-[#09090b] overflow-hidden shrink-0 relative border border-white/[0.06] rounded-md">
       <img
         src="${escapeHtml(imgUrl)}"
         alt="${escapeHtml(item.title)}"
@@ -529,7 +523,7 @@ function createListCard(item, isLowestPrice) {
       <div class="flex items-center space-x-2 mb-1">
         ${
           isLowestPrice
-            ? '<span class="bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10px] font-semibold px-2 py-0.5 rounded-full">Χαμηλότερη τιμή</span>'
+            ? '<span class="text-[10px] font-medium px-2 py-0.5 rounded border border-white/10 bg-white/[0.06] text-zinc-300">Χαμηλότερη τιμή</span>'
             : ""
         }
         <div class="text-[11px] text-slate-400 flex items-center space-x-1">
@@ -573,10 +567,10 @@ function createListCard(item, isLowestPrice) {
         href="${escapeHtml(item.url)}"
         target="_blank"
         rel="noopener noreferrer"
-        class="btn-card-action py-2 px-4 rounded-xl flex items-center space-x-1.5 group"
+        class="btn-card-action py-2 px-4 flex items-center gap-1.5"
       >
-        <span>Προβολή</span>
-        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-slate-400 group-hover:text-black transition-colors"></i>
+        <span>Άνοιγμα</span>
+        <i data-lucide="arrow-up-right" class="w-3.5 h-3.5 text-zinc-500"></i>
       </a>
     </div>
   `;
@@ -595,11 +589,11 @@ async function loadSourcesAudit() {
       .map((s) => {
         const isRestricted = s.status === "direct_link_only" || s.id === "facebook";
         const statusBadge = isRestricted
-          ? `<span class="bg-amber-500/10 text-amber-300 border border-amber-500/25 font-medium px-2.5 py-0.5 rounded-full text-[10px]">Μόνο Άμεσος Σύνδεσμος / Login</span>`
-          : `<span class="bg-emerald-500/10 text-emerald-300 border border-emerald-500/25 font-medium px-2.5 py-0.5 rounded-full text-[10px]">Επιτρεπτή Συλλογή</span>`;
+          ? `<span class="border border-white/10 text-zinc-400 font-medium px-2 py-0.5 rounded text-[10px]">Άμεσος σύνδεσμος</span>`
+          : `<span class="border border-white/10 text-zinc-300 font-medium px-2 py-0.5 rounded text-[10px]">Συλλογή OK</span>`;
 
         return `
-          <div class="p-3.5 bg-white/[0.02] border border-white/[0.07] rounded-xl space-y-2">
+          <div class="p-3 border border-white/[0.08] rounded-lg space-y-2">
             <div class="flex items-center justify-between">
               <div class="font-bold text-white text-sm flex items-center space-x-2">
                 <span>${escapeHtml(s.name)}</span>
